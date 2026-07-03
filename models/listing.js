@@ -5,7 +5,7 @@ const listingSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    discription: {
+    description: {
         type: String,
     },
     image: {
