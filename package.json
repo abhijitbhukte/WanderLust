@@ -2,7 +2,7 @@
   "name": "wanderlust",
   "version": "1.0.0",
   "description": "A full-stack Airbnb-inspired web application for discovering, listing, and managing travel accommodations. Built with Node.js, Express.js, MongoDB, EJS, and Bootstrap.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/abhijitbhukte/WanderLust#readme",
   "dependencies": {
     "ejs": "^6.0.1",
+    "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
     "method-override": "^3.0.0",
     "mongoose": "^9.7.3"
