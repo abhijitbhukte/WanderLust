@@ -8,7 +8,8 @@ const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 const listingSchema = require("./schema.js");
-
+const reviewSchema = require("./schema.js");
+const Review = require("./models/review.js");
 
 
 app.set("view engine", "ejs");
@@ -39,9 +40,21 @@ const validateListing = (req, res, next) => {
         let errMsg = error.details.map(el => el.message).join(", ");
         throw new expressError(400, errMsg);
     }
-
     next();
 };
+
+
+const validateSchema = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+
+    if (error) {
+        console.log(error.details);
+        let errMsg = error.details.map(el => el.message).join(", ");
+        throw new expressError(400, errMsg);
+    }
+    next();
+};
+
 
 // index route
 app.get("/listings", wrapAsync(async (req, res) => {
@@ -97,6 +110,20 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
     let deleteListing = await Listing.findByIdAndDelete(id);
     console.log(deleteListing);
     res.redirect("/listings");
+}));
+
+
+// reviews
+app.post("/listings/:id/reviews",validateSchema, wrapAsync(async(req, res) => {
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview);
+
+    await newReview.save();
+    await listing.save();
+
+    res.redirect(`/listings/${listing._id}`);
 }));
 
 app.get("/", (req, res) => {
