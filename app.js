@@ -7,11 +7,14 @@ const ejsMate = require("ejs-mate");
 const expressError = require("./utils/expressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const User = require("./models/user.js");
 
 
-
-const listings = require("./routers/listing.js");
-const reviews = require("./routers/review.js");
+const listingsRouter = require("./routers/listing.js");
+const reviewsRouter = require("./routers/review.js");
+const userRouter = require("./routers/user.js");
 
 
 
@@ -37,6 +40,15 @@ const sessionOption = {
 app.use(session(sessionOption));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+// use static authenticate method of model in LocalStrategy
+passport.use(new LocalStrategy(User.authenticate()));
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
@@ -44,8 +56,19 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/listings",listings);
-app.use("/listings/:id/reviews", reviews);
+app.use("/",userRouter);
+app.use("/listings",listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+
+// app.get("/demouser", async (req, res) => {
+//     let fakeUser = new User({
+//         email: "abhijitbhukte@gmail.com",
+//         username: "Abhijit1234",
+//     });
+//     let registeruser = await User.register(fakeUser, "Abhijit@1234");
+//     console.log(registeruser);
+//     res.send(registeruser);
+// });
 
 
 async function main() {
@@ -59,10 +82,6 @@ main().then(() => {
 });
 
 
-
-app.get("/", (req, res) => {
-    res.send("Hi, I am WanderLust");
-});
 
 
 app.use((req, res, next) => {
