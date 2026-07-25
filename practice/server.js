@@ -2,7 +2,11 @@ const express = require("express");
 const app = express();
 
 const session = require("express-session");
+const flash = require("connect-flash");
+
+
 app.use(session({secret: "secretstring",resave: false, saveUninitialized: true}));
+app.use(flash());
 
 
 app.get("/register", (req, res) => {
