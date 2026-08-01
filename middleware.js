@@ -1,14 +1,20 @@
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
 const expressError = require("./utils/expressError.js");
-const {listingSchema} = require("./schema.js");
+const {listingSchema, reviewSchema} = require("./schema.js");
+
 
 const isLoggedIn = (req, res, next) => {
-    console.log(req.user);
-    if(!req.isAuthenticated()) {
-        req.session.redirectUrl = req.originalUrl;
+    if (!req.isAuthenticated()) {
+
+        if (req.method === "GET") {
+            req.session.redirectUrl = req.originalUrl;
+        }
+
         req.flash("error", "You must be logged in!");
         return res.redirect("/login");
     }
+
     next();
 };
 
@@ -55,4 +61,14 @@ const validateReview = (req, res, next) => {
 };
 
 
-module.exports = {isLoggedIn, saveRedirectUrl, isOwner, validateListing, validateReview};
+const isReviewAuthor = async (req, res, next) => {
+    let {id, reviewId} = req.params;
+    const review = await Review.findById(reviewId);
+    if(!review.author.equals(res.locals.currUser._id)) {
+        req.flash("error", "You are not authorized to perform this action!");
+        return res.redirect(`/listings/${id}`);
+    }
+    next();
+};
+
+module.exports = {isLoggedIn, saveRedirectUrl, isOwner, validateListing, validateReview, isReviewAuthor};

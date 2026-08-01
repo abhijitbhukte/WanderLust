@@ -43,13 +43,13 @@ router.post("/",isLoggedIn, wrapAsync(async (req, res) => {
 // Show route
 router.get("/:id", wrapAsync(async (req, res) => {
     let {id} = req.params;
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
-    console.log(listing);
+    const listing = await Listing.findById(id).populate({path: "reviews", populate: {path: "author"}}).populate("owner");
+    // console.log(listing);
     if(!listing) {
         req.flash("error", "Listing You Requested For Are Deleted");
         return res.redirect("/listings");
     }
-    console.log(listing);
+    // console.log(listing);
     res.render("listings/show.ejs", {listing});
 }));
 
