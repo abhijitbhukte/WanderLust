@@ -14,6 +14,10 @@ main().then(() => {
 
 const initDB = async () => {
     await Listing.deleteMany({});
+    initData.data = initData.data.map((obj) => ({
+        ...obj,
+        owner: '6a6cef7e5e8200d87101ea9e', // Replace with the actual user ID you want to set as the owner
+    }));
     let Data = await Listing.insertMany(initData.data);
     console.log(Data);
 };
