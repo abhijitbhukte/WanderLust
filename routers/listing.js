@@ -4,7 +4,7 @@ const Listing = require("../models/listing");
 const wrapAsync = require("../utils/wrapAsync.js");
 const expressError = require("../utils/expressError.js");
 const {listingSchema} = require("../schema.js");
-const isLoggedIn = require("../middleware/loggin.js");
+const  { isLoggedIn } = require("../middleware/loggin.js");
 
 
 
@@ -30,6 +30,8 @@ router.get("/", wrapAsync(async (req, res) => {
     res.render("listings/index.ejs", {allListings});
 }));
 
+console.log(isLoggedIn);
+console.log(typeof isLoggedIn);
 
 // new Route
 router.get("/new",isLoggedIn, wrapAsync(async (req, res) => {
