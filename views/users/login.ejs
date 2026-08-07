@@ -1,19 +1,28 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-3">
-    <h2 class="col-6 offset-3">Welcome on Wanderlust</h2>
-    <div class="col-6 offset-3">
-        <form action="/login" method="POST" novalidate class="needs-validation">
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input name="username" placeholder="username" id="username" type="text" class="form-control" required/>
-                <div class="valid-feedback">Looks Good!</div>
+<div class="row mt-4">
+    <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-5 offset-lg-3.5">
+        <div class="form-card mx-auto" style="max-width: 440px;">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-compass text-teal fs-1 mb-2"></i>
+                <h3 class="fw-bold">Welcome back</h3>
+                <p class="text-secondary small">Log in to manage your listings and bookings</p>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input name="password" placeholder="password" id="password" type="password" class="form-control" required/>
+            <form action="/login" method="POST" novalidate class="needs-validation">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input name="username" placeholder="Enter your username" id="username" type="text" class="form-control" required/>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input name="password" placeholder="Enter your password" id="password" type="password" class="form-control" required/>
+                </div>
+                <button class="btn btn-teal w-100 py-2">Log In</button>
+            </form>
+            <div class="text-center mt-3 small text-secondary">
+                Don't have an account? <a href="/signup" class="text-teal fw-semibold">Sign Up</a>
             </div>
-            <button class="btn btn-success">login</button>
-        </form>
+        </div>
     </div>
 </div>
