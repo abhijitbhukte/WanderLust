@@ -1,3 +1,10 @@
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+if (process.env.NODE_ENV != "production") {
+    require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -6,27 +13,37 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const expressError = require("./utils/expressError.js");
 const session = require("express-session");
+const { MongoStore } = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user.js");
 
-
 const listingsRouter = require("./routers/listing.js");
 const reviewsRouter = require("./routers/review.js");
 const userRouter = require("./routers/user.js");
 
-
-
 app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
+const store = MongoStore.create({
+    mongoUrl: process.env.ATLASDB_URL,
+    crypto: {
+        secret: "WanderLust",
+    },
+    touchAfter: 24 * 3600,
+});
+
+store.on("error", (err) => {
+    console.log("Error in mongo session store", err);
+});
 
 const sessionOption = {
+    store,
     secret: "WanderLust",
     resave: false,
     saveUninitialized: true,
@@ -53,35 +70,24 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
-    res.locals.currUser = req.user;
+    res.locals.currUser = req.user || null;
     next();
 });
 
-app.use("/",userRouter);
-app.use("/listings",listingsRouter);
+app.use("/", userRouter);
+app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 
-// app.get("/demouser", async (req, res) => {
-//     let fakeUser = new User({
-//         email: "abhijitbhukte@gmail.com",
-//         username: "Abhijit1234",
-//     });
-//     let registeruser = await User.register(fakeUser, "Abhijit@1234");
-//     console.log(registeruser);
-//     res.send(registeruser);
-// });
-
-
 async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/wanderLust");
+    try {
+        await mongoose.connect(process.env.ATLASDB_URL);
+        console.log("✅ MongoDB Atlas connected successfully");
+    } catch (err) {
+        console.log("❌ MongoDB Atlas connection failed", err);
+    }
 }
 
-main().then(() => {
-    console.log("connected successfully")
-}).catch((err) => {
-    console.log(err);
-});
-
+main();
 
 
 
@@ -91,8 +97,8 @@ app.use((req, res, next) => {
 
 // error handling middleware
 app.use((err, req, res, next) => {
-    let {status = 500, message = "Something wents Worng"} = err;
-    res.status(status).render("./listings/error.ejs", {err});
+    let { status = 500, message = "Something wents Worng" } = err;
+    res.status(status).render("./listings/error.ejs", { err });
     // res.status(status).send(message);
 });
 

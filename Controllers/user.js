@@ -34,7 +34,7 @@ module.exports.renderLoginForm =  (req, res)=> {
 
 
 module.exports.login = async(req, res) => {
-    req.flash("success", "Welcome Back TO WenderLust!");
+    req.flash("success", "Welcome Back to WenderLust!");
     let redirectUrl = res.locals.redirectUrl || "/listings";
     res.redirect(redirectUrl);
 }

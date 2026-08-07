@@ -119,3 +119,22 @@ body {
     padding-right: 0;
 }
 
+/* Map */
+#map {
+    height: 400px;
+    width: 90vh;
+}
+
+.maplibregl-ctrl-attrib {
+    display: none;
+}
+
+
+.maplibregl-popup-content {
+    padding: 5px 10px;
+    max-width: 180px !important;
+    min-width: 100px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 8px;
+}

@@ -1,4 +1,8 @@
 <% layout("/layouts/boilerplate") %>
+<script>
+    const mapToken = "<%= process.env.MAPTILER_API_KEY %>";
+    const listing = <%- JSON.stringify(listing) %>;
+</script>
 <div class="row">
     <div class="col-8 offset-3">
         <body>
@@ -70,8 +74,9 @@
         <% } %>
         
 
-        <h5><b>All Reviews</b></h5>
+         <% if (listing.reviews.length > 0) { %>
         <div class="row">
+            <h5><b>All Reviews</b></h5>
             <% for(review of listing.reviews) { %>
                <div class="card col-md-5 ms-3 mb-3">
                     <div class="card-body h-100">
@@ -88,9 +93,16 @@
                </div>
             <% } %>
         </div>
+        <% } %>
     </div>
-    
+       <div class="col-8 offset-3 mb-3">
+            <h5>Where You'll be</h5>
+            <div id="map"></div>           
+        </div>
+        <script src="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.umd.min.js"></script>
+        <script src="/js/map.js"></script>
 </body>
-
-
 </div>
+
+
+

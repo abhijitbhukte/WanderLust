@@ -7,17 +7,14 @@ const {isOwner} = require("../middleware.js");
 const {validateListing} = require("../middleware.js");
 const listingController = require("../Controllers/listings.js");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage: storage });
 
 
 
 router.route("/")
     .get(wrapAsync(listingController.index)) // index route
-    // .post(isLoggedIn, validateListing, wrapAsync(listingController.addListing)); // create route
-    .post(upload.single("listing[image]"), (req, res) => {
-        res.send(req.file);
-    });
-
+    .post(isLoggedIn, upload.single("listing[image]"), validateListing, wrapAsync(listingController.addListing)); // create route
 
 // new Route
 router.get("/new",isLoggedIn, wrapAsync(listingController.renderNewForm));
@@ -25,7 +22,7 @@ router.get("/new",isLoggedIn, wrapAsync(listingController.renderNewForm));
 
 router.route("/:id")
     .get(wrapAsync(listingController.showListing))  // show route
-    .put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.updateListing))  // update route
+    .put(isLoggedIn, isOwner, upload.single("listing[image]"), validateListing, wrapAsync(listingController.updateListing))  // update route
     .delete(isLoggedIn, isOwner, wrapAsync(listingController.deleteListing));  // delete route
 
 // edit route
