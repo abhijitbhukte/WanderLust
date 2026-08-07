@@ -1,4 +1,7 @@
 {
+    "engines": {
+      "node": "24.18.1"
+    },
   "name": "wanderlust",
   "version": "1.0.0",
   "description": "A full-stack Airbnb-inspired web application for discovering, listing, and managing travel accommodations. Built with Node.js, Express.js, MongoDB, EJS, and Bootstrap.",
