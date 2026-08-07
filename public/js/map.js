@@ -28,3 +28,7 @@ if (typeof mapToken !== "undefined" && typeof listing !== "undefined" && documen
         console.warn("Map initialization skipped:", e.message);
     }
 }
+
+
+
+
